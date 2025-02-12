@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>เลือกจังหวัด อำเภอ ตำบล</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <label>จังหวัด:</label>
+    <select id="province">
+        <option value="">เลือกจังหวัด</option>
+    </select>
+
+    <label>อำเภอ:</label>
+    <select id="district">
+        <option value="">เลือกอำเภอ</option>
+    </select>
+
+    <label>ตำบล:</label>
+    <select id="subdistrict">
+        <option value="">เลือกตำบล</option>
+    </select>
+
+    <script>
+        $(document).ready(function() {
+            $.get("http://onebit-production.com:1880/api/getprovince", function(data){
+                data.forEach(p => {
+                    $("#province").append(`<option value="${p.province_code}">${p.name_th}</option>`);
+                });
+            })
+
+            $("#province").change(function(){
+                let provinceid = $(this).val();
+                $("#district").html('<option value="">เลือกอำเภอ</option>');
+                $("#subdistrict").html('<option value="">เลือกตำบล</option>');
+
+                $.get(`http://onebit-production.com:1880/api/getdistrict?prov_id=${provinceid}`, function(data){
+                data.forEach(d => {
+                    $("#district").append(`<option value="${d.district_code}">${d.name_th}</option>`);
+                });
+            })
+            })
+        })
+    </script>
+</body>
+</html>
